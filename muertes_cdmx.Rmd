@@ -1,0 +1,110 @@
+---
+title: "Muertes diarias en la CDMX"
+author: "Cesar Gerardo Hernández Vargas"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: scroll
+    fig_mobile: TRUE
+    theme: lumen
+    social: ["twitter", "facebook"]
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(plotly)
+library(data.table)
+muertes <- fread("https://datos.cdmx.gob.mx/explore/dataset/actas-de-defuncion-en-el-registro-civil-de-la-ciudad-de-mexico/download/?format=csv&timezone=America/Mexico_City&lang=es&use_labels_for_header=true&csv_separator=%2C")
+muertes$fecha_defuncion<-as.Date(muertes$fecha_defuncion)
+siete<-filter(muertes, fecha_defuncion<"2018-01-01")
+ocho<-filter(muertes, fecha_defuncion>"2017-12-31", fecha_defuncion<"2019-01-01")
+nueve<-filter(muertes, fecha_defuncion>"2018-12-31", fecha_defuncion<"2020-01-01")
+veinte<-filter(muertes, fecha_defuncion>"2019-12-31")
+```
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-177453627-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-177453627-1');
+</script>
+
+
+Defunciones acumuladas en la CDMX según la fecha de defunción
+========================================
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Defunciones en 2020
+
+```{r}
+veinte_recuento<-veinte %>%  group_by(fecha_defuncion) %>% summarise(n = n())
+g20<-ggplot(veinte_recuento) +
+ aes(x = fecha_defuncion, y = n) +
+ geom_line(size = 1L, colour = "red") +
+ theme_minimal()
+ggplotly(g20)
+```
+>Fuente: Elaboración propia con [datos abiertos del Gobierno de la CDMX](https://datos.cdmx.gob.mx/explore/dataset/actas-de-defuncion-en-el-registro-civil-de-la-ciudad-de-mexico/information/).
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Defunciones en2019
+
+```{r}
+nueve_recuento<-nueve %>%  group_by(fecha_defuncion) %>% summarise(n = n())
+g19<-ggplot(nueve_recuento) +
+ aes(x = fecha_defuncion, y = n) +
+ geom_line(size = 1L, colour = "orange") +
+ theme_minimal()
+ggplotly(g19)
+```
+>Fuente: Elaboración propia con [datos abiertos del Gobierno de la CDMX](https://datos.cdmx.gob.mx/explore/dataset/actas-de-defuncion-en-el-registro-civil-de-la-ciudad-de-mexico/information/).
+
+### Defunciones en 2018
+
+```{r}
+ocho_recuento<-ocho %>%  group_by(fecha_defuncion) %>% summarise(n = n())
+g18<-ggplot(ocho_recuento) +
+ aes(x = fecha_defuncion, y = n) +
+ geom_line(size = 1L, colour = "purple") +
+ theme_minimal()
+ggplotly(g18)
+```
+>Fuente: Elaboración propia con [datos abiertos del Gobierno de la CDMX](https://datos.cdmx.gob.mx/explore/dataset/actas-de-defuncion-en-el-registro-civil-de-la-ciudad-de-mexico/information/).
+
+### Defunciones en 2017
+
+```{r}
+siete_recuento<-siete %>%  group_by(fecha_defuncion) %>% summarise(n = n())
+g17<-ggplot(siete_recuento) +
+ aes(x = fecha_defuncion, y = n) +
+ geom_line(size = 1L, colour = "#0c4c8a") +
+ theme_minimal()
+ggplotly(g17)
+```
+>Fuente: Elaboración propia con [datos abiertos del Gobierno de la CDMX](https://datos.cdmx.gob.mx/explore/dataset/actas-de-defuncion-en-el-registro-civil-de-la-ciudad-de-mexico/information/).
+
+
+
+Créditos
+========================================
+
+###
+
+Created by: [Cesar Hernández](https://cghv94.github.io)
+
+Correo: cghv94@outlook.es
+
+Twitter: @[cghv94](https://twitter.com/cghv94)
+
+Este sitio está vinculado con [Google Analytics](https://analytics.google.com/analytics/web/provision/#/provision) y [Google Search Console](https://search.google.com/search-console/about).
+
+<p>Esta obra fue generada mediante R en `r format(Sys.Date(), format = "%B %d, %Y")`. [Creative Commons (CC)](http://creativecommons.org/licenses/by-nc-sa/4.0/).<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Licencia de Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a><br/><br/>Esta obra está bajo una <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">licencia de Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0 Internacional.</a></p>
